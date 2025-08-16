@@ -1,0 +1,41 @@
+DOCUMENTATION
+
+
+A Propos du Code de Test Ecrit par Bidias MELATAGUIA : 
+
+	L’objectif etait d’ecrire un script de test. Ainsi la difficulte a ete de comprendre l’architecture des fichiers excels sur la base desquels on devait rendre les tests generiques.
+	Pour chaque fichier excel concu par nos precesseurs, on avait 2 feuilles principales : La premiere « fields » contenant les data-test-id des differents champs de formulaires a manipuler et la seconde « data » contenant les donnees a remplir dans les champs. Notons que certaines donnees de ces champs doivent etre celles attendues.
+ 
+	Ainsi apres m’etre approporie les fichiers excels, L’etape suivante etait d’ecrire la classe qui devait gerer les differents champs en les classant par type. Il s’agit de « HadronFieldHandler »
+
+
+
+
+Cette classe contient 4 principales methodes statiques :
+
+➢	canHandleField : qui verifie si le champs est remplissable
+➢	chec_exists_element :qui verifie si un element de Plexus est present. Cette fonction aide au moment de faire un assertEqual.
+➢	clickGoButtonOrValue : qui se charge de remplir les champs du formulaire selon le type de champs defini dans le fichier excel
+➢	GetContentField: qui s’occupe de nous retourner la valeur contenu dans le champs. « Pour le moment elle n’a pas ete utilise mais fonctionne correctement et pourra nous servir au moment d’ecrire les tests qui consistent a verifier ce que contient un champs (valeur par defaut, champs vide ) »
+
+
+
+-Fichier : Login.py
+	A partir de la fonction GoLogin qui prend pour argument le rôle de l’utilisateur qui veut se connecter, on peut effectuer nos differents tests sur le Login de l’utilisateur.
+	Le principe est le suivant. En fonction du rôle en rôle entre comme argument, le programme va cherche dans le fichier excel « LoginTestData.xlsx », les informations ( Email et mot de passe ) de l’utilisateur ayant ce rôle et le fait se connecter.
+
+- Fichier : AddForm.py
+	Ici est definie la fonction Form qui prend comme argument dans l’ordre, Le nom du formulaire, le rôle de l’utilisateur qui s’est « login » pour ouvrir ce formulaire et enfin le type de formulaire a ouvrir. On peut donc avoir
+			ADD       : Si c’est un formulaire d’ajout
+			EDIT       : Si c’est un formulaire de modification
+			DELETE : Si c’est un formulaire de suppression
+
+	exemple : Form(self, nameForm, roleUser, typeForm)
+
+	La liste des nameForm n’est autre que la colonne FormName du fichier excel Sidebar.xlsx. Ainsi pour un nom : Ajouter un Collegue, on peut prendre soit la chaine entiere « Ajouter un Collegue », soit le chaine Collegue.
+
+- Fichier : FieldAddForm.py
+	C’est a ce niveau qu’est definie la fonction Field qui prend pour argument le nom du formulaire, le rôle de l’utilisateur qui s’est « login » pour ouvrir ce formulaire , le numero de la ligne du fichier excel contenant les donnees qui seront inserees dans les champs du formulaire,  le type de formulaire a ouvrir et le choix ( Si Oui ou Non on peut commencer a remplir oubien juste ouvrir le formulaire )
+	Une chose importante a savoir c’est au niveau du fichier excel : Deja tous les noms champs qu’on a repertorie en donnant leur data-test-id au niveau de la feuille « fields » doivent etre les colonnes de la feuille « data » du meme fichier. Et si on ne veut pas qu’un champs soit rempli car sa methode d’insertion de donnees n’est pas encore parfaitement defini, il faut juste laisser la cellule vide au niveau de la feuille « data »
+
+- Les autres fichiers : EditItem.py,  DeleteItem.py, CloseForm.py, ControlTest.py, Logout consiste ainsi en des cas de test qui font appel aux fonction definie dans les fichhiers precedants. On definira juste des « assertEqual » pour verifier qu’on a de bon resultat de test comme : La couleur verte ou orange de la barre de titre ...
